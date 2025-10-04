@@ -25,7 +25,7 @@ MUHIM: Bu AI tashxis bo'lib, 100% aniq emas. Bemor albatta shifokorga ko'rinishi
           {
             role: "system",
             content:
-              "Siz tibbiy yordamchi AI-siziz. Semptomlarni tahlil qiling va oddiy tilda tushuntiring.",
+              "Siz tibbiy yordamchi AI-siziz. Semptomlarni tahlil qiling va oddiy tilda tushuntiring",
           },
           {
             role: "user",

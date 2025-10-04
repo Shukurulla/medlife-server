@@ -1,4 +1,7 @@
 const axios = require("axios");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 exports.chatWithAI = async (symptoms, userAge, hasDiabetes) => {
   try {
@@ -34,7 +37,7 @@ MUHIM: Bu AI tashxis bo'lib, 100% aniq emas. Bemor albatta shifokorga ko'rinishi
       },
       {
         headers: {
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
           "Content-Type": "application/json",
         },
       }

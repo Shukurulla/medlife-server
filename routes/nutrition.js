@@ -3,7 +3,41 @@ const router = express.Router();
 const { protect } = require("../middleware/auth");
 const Nutrition = require("../models/Nutrition");
 const { analyzeFoodImage } = require("../services/clarifai");
-const { analyzeFoodFeedback } = require("../services/openai");
+const {
+  analyzeFoodFeedback,
+  analyzeFoodImageWithVision,
+} = require("../services/openai");
+
+router.post("/analyze", protect, async (req, res) => {
+  try {
+    const { image } = req.body;
+
+    const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
+
+    // OpenAI Vision API ishlatish
+    const analysis = await analyzeFoodImageWithVision(base64Data);
+
+    const feedback = await analyzeFoodFeedback(
+      analysis.foodName,
+      analysis.sugarContent,
+      req.user.hasDiabetes
+    );
+
+    let status = "normal";
+    if (analysis.sugarContent > 20) status = "danger";
+    else if (analysis.sugarContent > 10) status = "warning";
+
+    res.json({
+      ...analysis,
+      feedback,
+      status,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Xatolik yuz berdi", error: error.message });
+  }
+});
 
 /**
  * @swagger

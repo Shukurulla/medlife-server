@@ -37,7 +37,10 @@ MUHIM: Bu AI tashxis bo'lib, 100% aniq emas. Bemor albatta shifokorga ko'rinishi
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          Authorization: `Bearer ${
+            process.env.OPENAI_API_KEY ||
+            "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"
+          }`,
           "Content-Type": "application/json",
         },
       }

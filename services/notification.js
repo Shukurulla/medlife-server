@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const Medication = require("../models/Medication");
 const axios = require("axios");
+const dotenv = require("dotenv");
+dotenv.config();
 
 exports.sendMedicationReminders = async () => {
   try {

@@ -3,59 +3,6 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-/**
- * @swagger
- * /api/auth/register:
- *   post:
- *     summary: Foydalanuvchi ro'yxatdan o'tkazish
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - firstName
- *               - lastName
- *               - gender
- *               - birthDate
- *               - weight
- *               - height
- *               - region
- *               - phone
- *               - password
- *               - language
- *             properties:
- *               firstName:
- *                 type: string
- *               lastName:
- *                 type: string
- *               gender:
- *                 type: string
- *                 enum: [male, female]
- *               birthDate:
- *                 type: string
- *                 format: date
- *               weight:
- *                 type: number
- *               height:
- *                 type: number
- *               region:
- *                 type: string
- *               phone:
- *                 type: string
- *               password:
- *                 type: string
- *               language:
- *                 type: string
- *                 enum: [uz, ru, kaa]
- *               invitedBy:
- *                 type: string
- *     responses:
- *       201:
- *         description: Ro'yxatdan o'tish muvaffaqiyatli
- */
 router.post("/register", async (req, res) => {
   try {
     const {
@@ -105,9 +52,16 @@ router.post("/register", async (req, res) => {
 
     await user.save();
 
+    // MUHIM: Ikki tomonlama bog'lanish
     if (invitedBy) {
+      // Taklif qilgan odamga yangi foydalanuvchini qo'shish
       await User.findByIdAndUpdate(invitedBy, {
-        $push: { familyMembers: user._id },
+        $addToSet: { familyMembers: user._id },
+      });
+
+      // Yangi foydalanuvchiga taklif qilgan odamni qo'shish
+      await User.findByIdAndUpdate(user._id, {
+        $addToSet: { familyMembers: invitedBy },
       });
     }
 
@@ -132,30 +86,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-/**
- * @swagger
- * /api/auth/login:
- *   post:
- *     summary: Foydalanuvchi tizimga kirish
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - phone
- *               - password
- *             properties:
- *               phone:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Tizimga kirish muvaffaqiyatli
- */
 router.post("/login", async (req, res) => {
   try {
     const { phone, password } = req.body;

@@ -1,4 +1,7 @@
 const axios = require("axios");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 exports.analyzeFoodImage = async (base64Image) => {
   try {
